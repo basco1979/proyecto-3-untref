@@ -19,6 +19,10 @@ const Catalogo = sequelize.define('Catalogo', {
     },
     categoria: {
         type: DataTypes.STRING,
+        references: {
+            model: 'categoria',
+            key: 'id'
+        }
     },
     resumen: {
         type: DataTypes.TEXT,
@@ -37,5 +41,6 @@ const Catalogo = sequelize.define('Catalogo', {
     timestamps: false
 });
 
+Catalogo.belongsTo(Categoria, {foreignKey: 'id'});
 
 module.exports = Catalogo;

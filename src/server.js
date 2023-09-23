@@ -1,3 +1,5 @@
+/* eslint-disable no-constant-condition */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable max-len */
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
@@ -38,45 +40,64 @@ server.get('/catalogo/:id', async (req, res) => {
 
 server.get('/catalogo/titulo/:titulo', async (req, res) => {
     const { titulo} = req.params;
-    const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE titulo LIKE '%${titulo}%'`, {type: sequelize.QueryTypes.SELECT});
-    for (let cat of catalogo) {
-        cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
+    try {
+        const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE titulo LIKE '%${titulo}%'`, {type: sequelize.QueryTypes.SELECT});
+        if (catalogo.length < 1) return res.status(400).send('Titulo no encontrado');
+        for (let cat of catalogo) {
+            cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
+        }
+        res.status(200).send(catalogo);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error en el servidor');
     }
-    res.status(200).send(catalogo);
 });
 
 server.get('/catalogo/genero/:genero', async (req, res) => {
     const { genero} = req.params;
-    const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE genero LIKE'%${genero}%'`, {type: sequelize.QueryTypes.SELECT});
-    for (let cat of catalogo) {
-        cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
+    try {
+        const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE genero LIKE'%${genero}%'`, {type: sequelize.QueryTypes.SELECT});
+        if (catalogo.length < 1) return res.status(400).send('Genero no encontrado');
+        for (let cat of catalogo) {
+            cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
+        }
+        res.status(200).send(catalogo);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error en el servidor');
     }
-    res.status(200).send(catalogo);
 });
 
 server.get('/catalogo/categoria/:categoria', async (req, res) => {
     const { categoria} = req.params;
-    const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE categoria LIKE'%${categoria}%'`, {type: sequelize.QueryTypes.SELECT});
-    for (let cat of catalogo) {
-        cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
+    try {
+        const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE categoria LIKE'%${categoria}%'`, {type: sequelize.QueryTypes.SELECT});
+        if (catalogo.length < 1) return res.status(400).send('Categoria no encontrada');
+        for (let cat of catalogo) {
+            cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
+        }
+        res.status(200).send(catalogo);
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send('Error en el servidor');
     }
-    res.status(200).send(catalogo);
 });
 
 
 server.get('/categorias', async (req, res) => {
-    // const categoria = await sequelize.query('SELECT nombre FROM categoria', {type: sequelize.QueryTypes.SELECT});
     const categoria = await Categoria.findAll();
     res.status(200).send(categoria);
 });
 
 
 server.post('/catalogo', async (req, res) => {
-    const { titulo, poster, resumen, temporadas, trailer, genero } = req.body;
-    if (!titulo || !poster || !resumen || !temporadas || !trailer) return res.status(400).send('Faltan datos relevantes');
+    const { titulo, poster, categoria, resumen, temporadas, trailer, genero } = req.body;
+    console.log(req.body);
+    if (!titulo || !categoria || !poster || !resumen || temporadas < 0 || !trailer) return res.status(400).send('Faltan datos relevantes');
     try {
         const catalogo = {
             titulo,
+            categoria: 'Serie' ? 1 : ('Pelicula' ? 2 : ''),
             poster,
             resumen,
             temporadas,
