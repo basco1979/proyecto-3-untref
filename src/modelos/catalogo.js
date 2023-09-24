@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../connection_db');
+const Categoria = require('./categoria');
 
 const Catalogo = sequelize.define('Catalogo', {
     id: {
@@ -15,6 +16,9 @@ const Catalogo = sequelize.define('Catalogo', {
     titulo: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    categoria: {
+        type: DataTypes.STRING,
     },
     resumen: {
         type: DataTypes.TEXT,
@@ -32,5 +36,6 @@ const Catalogo = sequelize.define('Catalogo', {
     tableName: 'catalogo',
     timestamps: false
 });
+
 
 module.exports = Catalogo;
