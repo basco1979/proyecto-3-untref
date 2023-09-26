@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable no-constant-condition*/
+/* eslint-disable no-constant-condition */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable max-len */
 const path = require('path');
@@ -17,16 +17,25 @@ const server = express();
 server.use(express.json());
 
 server.get('/catalogo', async (req, res) => {
-    const catalogo = await sequelize.query('SELECT * FROM catalogoview', {type: sequelize.QueryTypes.SELECT});
-    for (let cat of catalogo) {
-        cat.poster = `http://${req.headers.host}${req.originalUrl.slice(0, req.originalUrl.length - 1)}${cat.poster}`;
+    const {titulo, genero, categoria } = req.query;
+    let catalogo = [];
+    try {
+        if (titulo) catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE lower(titulo) LIKE lower('%${titulo}%')`, {type: sequelize.QueryTypes.SELECT});
+        else if (genero) catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE lower(genero) LIKE lower('%${genero}%')`, {type: sequelize.QueryTypes.SELECT});
+        else if (categoria) catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE lower(categoria) LIKE lower('%${categoria}%')`, {type: sequelize.QueryTypes.SELECT});
+        else catalogo = await sequelize.query('SELECT * FROM catalogoview', {type: sequelize.QueryTypes.SELECT});
+        for (let cat of catalogo) {
+            cat.poster = `http://${req.headers.host}${req.originalUrl.slice(0, req.originalUrl.length - 1)}${cat.poster}`;
+        }
+        res.status(200).send(catalogo);
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).send('Error en el servidor');
     }
-    res.status(200).send(catalogo);
 });
 
 server.get('/catalogo/:id', async (req, res) => {
     const contenidoId = req.params.id;
-    if (Number.isNaN(Number(contenidoId))) return res.status(400).send('El ID tiene que ser un numero');
     try {
         const contenido = await sequelize.query(`SELECT * FROM catalogoview WHERE id = ${contenidoId}`, {type: sequelize.QueryTypes.SELECT});
         if (contenido.length < 1) return res.status(400).send('Id no encontrado');
@@ -94,7 +103,7 @@ server.get('/categorias', async (req, res) => {
 
 server.post('/catalogo', async (req, res) => {
     const { titulo, poster, categoria, resumen, temporadas, trailer, genero } = req.body;
-    // if (!titulo || !categoria || !poster || !resumen || temporadas < 0 || !trailer) return res.status(400).send('Faltan datos relevantes');
+    if (!titulo || !categoria || !poster || !resumen || !temporadas || !trailer) return res.status(400).send('Faltan datos relevantes');
     try {
         const catalogo = {
             titulo,
@@ -107,7 +116,7 @@ server.post('/catalogo', async (req, res) => {
         await Catalogo.create(catalogo);
         const catalogoId = await sequelize.query(`SELECT id FROM catalogo WHERE titulo='${titulo}'`, {type: sequelize.QueryTypes.SELECT}).then((c) => c.map((cat) => cat.id));
         for (let gen of genero) {
-            const generoId = await sequelize.query(`SELECT id FROM genero WHERE genero='${gen}'`, {type: sequelize.QueryTypes.SELECT}).then((g) => g.map((genID) => genID.id));
+            const generoId = await sequelize.query(`SELECT id FROM genero WHERE genero='${gen}'`, {type: sequelize.QueryTypes.SELECT}).then((g) => g.map((ge) => ge.id));
             const genero_catalogo = {
                 idCatalogo: catalogoId,
                 idGenero: generoId
