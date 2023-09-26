@@ -10,6 +10,7 @@ const sequelize = require('../connection_db');
 const Catalogo = require('./modelos/catalogo');
 const Categoria = require('./modelos/categoria');
 const Genero_Catalogo = require('./modelos/genero_catalogo');
+const Reparto = require('./modelos/reparto');
 
 const server = express();
 
@@ -93,8 +94,8 @@ server.get('/categorias', async (req, res) => {
 
 
 server.post('/catalogo', async (req, res) => {
-    const { titulo, poster, categoria, resumen, temporadas, trailer, genero } = req.body;
-    // if (!titulo || !categoria || !poster || !resumen || temporadas < 0 || !trailer) return res.status(400).send('Faltan datos relevantes');
+    const { titulo, poster, categoria, resumen, temporadas, trailer, genero, actor } = req.body;
+    if (!titulo || !categoria || !poster || !resumen || temporadas < 0 || !trailer) return res.status(400).send('Faltan datos relevantes');
     try {
         const catalogo = {
             titulo,
@@ -113,6 +114,14 @@ server.post('/catalogo', async (req, res) => {
                 idGenero: generoId
             };
             Genero_Catalogo.create(genero_catalogo);
+        }
+        for (let act of actor) {
+            const actorId = await sequelize.query(`SELECT id FROM actor WHERE actor='${act}'`, {type: sequelize.QueryTypes.SELECT}).then((a) => a.map((actID) => actID.id));
+            const reparto = {
+                idCatalogo: catalogoId,
+                idActor: actorId
+            };
+            Reparto.create(reparto);
         }
         return res.status(201).send('Registro creado');
     } catch (error) {
