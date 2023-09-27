@@ -9,8 +9,7 @@ const Actor = sequelize.define('Actor', {
         allowNull: false
     },
     actor: {
-        type: DataTypes.STRING,
-        default: ''
+        type: DataTypes.STRING
     }
 }, {
     tableName: 'actor',

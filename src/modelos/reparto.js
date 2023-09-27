@@ -9,7 +9,7 @@ const Reparto = sequelize.define('Reparto', {
         primaryKey: true,
         allowNull: false
     },
-    iActor: {
+    idActor: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false
