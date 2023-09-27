@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../connection_db');
 const Categoria = require('./categoria');
+const Genero = require('./genero');
+const Genero_Catalogo = require('./genero_catalogo');
 
 const Catalogo = sequelize.define('Catalogo', {
     id: {
@@ -42,5 +44,9 @@ const Catalogo = sequelize.define('Catalogo', {
 });
 
 Catalogo.belongsTo(Categoria, {foreignKey: 'id'});
+
+Catalogo.belongsToMany(Genero, { through: Genero_Catalogo });
+Genero.belongsToMany(Catalogo, { through: Genero_Catalogo });
+
 
 module.exports = Catalogo;

@@ -21,7 +21,9 @@ La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual
     │     └── actor.js
     │     └── catalogo.js
     │     └── categoria.js
+    │     └── genero_catalogo.js
     │     └── genero.js
+    │     └── reparto.js
     │   └── server.js
     ├── .env
     ├── .env.dist
@@ -74,7 +76,7 @@ Este módulo permite la gestión del contenido. El mismo, ofrece funciones para 
 #### Método GET:
 - Request:
   - Parámetros opcionales de tipo PARAMS:
-    - /titulo/Westworld  *(tipo: string. Trae el contenido del titulo filtrado)* 
+    - /titulo/Westworld  *(tipo: string. Trae el contenido del titulo filtrado. Puede ser parte del titulo)* 
     - /genero/Drama  *(tipo: string. Trae los titulos del genero filtrado)* 
     - /categoria/Serie *(tipo: string. Trae los titulos de la categoria filtrada)* 
 - Response:
@@ -123,11 +125,28 @@ Este módulo permite la gestión del contenido. El mismo, ofrece funciones para 
 #### Método POST:
 - Request:
   - Parámetros requeridos del BODY:
-    - titulo=El Gran Pez *(tipo: string. Establece el valor del titulo)* 
-    - poster=...        *(tipo: string. Establece el poster del titulo)* 
-    - resumen=...        *(tipo: string. Establece el resumen del titulo)* 
-    - temporadas=0       *(tipo: int. Establece la cantidad de temporadas)* 
-    - trailer=...       *(tipo: int. Establece el link del trailer)*
+    - titulo='Rambo' *(tipo: string. Establece el título del contenido)* 
+    - poster='/posters/36.jpg'  *(tipo: string. Establece el poster del título)* 
+    - categoria='Pelicula'  *(tipo: string. Establece la categoría del título)* 
+    - genero=['Acción', 'Suspenso']  *(tipo: array de strings. Establece los géneros del título)* 
+    - resumen='Rambo contra los soviéticos'        *(tipo: string. Establece el resumen del título)* 
+    - temporadas=0  *(tipo: int. Establece la cantidad de temporadas)* 
+    - actor= ['Silvester Stallone', 'Yashin Versek'] *(tipo: array de strings. Establece los actores del título)*
+    - trailer=""       *(tipo: string. Establece el link del trailer)*
+
+  ``` json
+  {
+    "titulo": "Rambo",
+    "poster": "/posters/36.jpg",
+    "categoria": "Pelicula",
+    "genero": ["Acción", "Suspenso"],
+    "resumen": "Rambo contra los soviéticos",
+    "temporadas": 0,
+    "actor": ["Silvester Stallone", "Yashin Versek"],
+    "trailer": ""
+  }
+ ```
+
 - Response:
   - Código HTTP: **201** *message: 'Registro creado'*
   - Código HTTP: **400** *message: Faltan datos relevantes*
