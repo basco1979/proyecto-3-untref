@@ -173,6 +173,8 @@ server.delete('/catalogo/:id', async (req, res) => {
     try {
         const contenido = await Catalogo.findByPk(req.params.id);
         if (!contenido) return res.status(400).send('Id no encontrado');
+        await Reparto.destroy({ where: { idCatalogo: req.params.id } });
+        await Genero_Catalogo.destroy({ where: { idCatalogo: req.params.id } });
         await Catalogo.destroy({ where: { id: req.params.id } });
         res.status(200).send({
             message: `El producto de id: ${req.params.id} fue eliminado con éxito.`
