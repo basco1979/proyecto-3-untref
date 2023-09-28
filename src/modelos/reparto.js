@@ -1,7 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../connection_db');
-const Actor = require('./actor');
-const Catalogo = require('./catalogo');
 
 const Reparto = sequelize.define('Reparto', {
     idCatalogo: {
@@ -15,7 +13,5 @@ const Reparto = sequelize.define('Reparto', {
         allowNull: false
     }
 }, { tableName: 'reparto', timestamps: false });
-Actor.belongsToMany(Catalogo, { through: Reparto });
-Catalogo.belongsToMany(Actor, { through: Reparto });
 
 module.exports = Reparto;

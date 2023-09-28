@@ -118,7 +118,8 @@ Este módulo permite la gestión del contenido. El mismo, ofrece funciones para 
         }
     ```
   - Código HTTP: **200** *Devuelve el titulo seleccionado*
-  - Código HTTP: **400** *message: Id no encontrado*
+  - Código HTTP: **400** *message: Id tiene que ser un numero*
+  - Código HTTP: **404** *message: Id no encontrado*
   - Código HTTP: **500** *message: Error en el servidor*
 
 
