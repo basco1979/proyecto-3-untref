@@ -15,6 +15,8 @@ server.use(express.json());
 
 // Rutas a Catalogo
 server.use('/catalogo', Catalogo);
+
+// Rutas a Categorias
 server.use('/categorias', Categoria);
 
 // Control de rutas inexistentes

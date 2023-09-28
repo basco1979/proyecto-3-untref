@@ -23,9 +23,9 @@ La misma, fue diseñada y construida sobre una arquitectura API RESTful, la cual
     │     └── categoria.js
     │     └── genero_catalogo.js
     │     └── genero.js
+    │     └── index.js
     │     └── reparto.js
     │   └── server.js
-    ├── .env
     ├── .env.dist
     ├── .eslintrc.json
     ├── .gitignore
@@ -68,6 +68,7 @@ Este módulo permite la gestión del contenido. El mismo, ofrece funciones para 
 | GET | http://127.0.0.1:3005/catalogo/titulo/Riverdale | Filtrar por titulo o parte del titulo |
 | GET | http://127.0.0.1:3005/catalogo/genero/Drama | Filtrar por genero |
 | GET | http://127.0.0.1:3005/catalogo/categoria/Serie | Filtrar por categoria |
+| GET | http://127.0.0.1:3005/categorias | Obtiene todas las categorias |
 | POST | http://127.0.0.1:3005/catalogo | Crea un nuevo registro |
 | PUT | http://127.0.0.1:3005/catalogo/1 | Modifica un registro en específico |
 | DELETE | http://127.0.0.1:3005/catalogo/1 | Elimina un registro en específico |
