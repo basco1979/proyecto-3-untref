@@ -32,7 +32,7 @@ const Catalogo = sequelize.define('Catalogo', {
         default: 0
     },
     trailer: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         default: ''
     }
 }, {

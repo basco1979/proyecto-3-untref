@@ -4,6 +4,7 @@ const Genero_Catalogo = require('./genero_catalogo');
 const Catalogo = require('./catalogo');
 const Actor = require('./actor');
 const Reparto = require('./reparto');
+const VistaCatalogo = require('./vista-catalogo');
 
 Catalogo.belongsTo(Categoria, {foreignKey: 'id'});
 
@@ -31,4 +32,4 @@ Catalogo.belongsToMany(Actor, {
     foreignKey: 'idCatalogo',
     otherKey: 'idActor'
 });
-module.exports = {Catalogo, Categoria, Genero, Genero_Catalogo, Actor, Reparto};
+module.exports = {Catalogo, Categoria, Genero, Genero_Catalogo, Actor, Reparto, VistaCatalogo};

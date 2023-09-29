@@ -8,11 +8,13 @@
 const express = require('express');
 const router = express.Router();
 const sequelize = require('../../connection_db');
-const {Catalogo, Genero_Catalogo, Actor, Reparto} = require('../modelos/index');
+const { Op } = require('sequelize');
+const {Catalogo, Genero_Catalogo, Actor, Reparto, VistaCatalogo} = require('../modelos/index');
 
 router.get('/', async (req, res, next) => {
     try {
-        const catalogo = await sequelize.query('SELECT * FROM catalogoview', {type: sequelize.QueryTypes.SELECT});
+        //        const catalogo = await sequelize.query('SELECT * FROM catalogoview', {type: sequelize.QueryTypes.SELECT});
+        const catalogo = await VistaCatalogo.findAll();
         for (let cat of catalogo) {
             cat.poster = `http://${req.headers.host}${req.originalUrl.slice(0, req.originalUrl.length - 1)}${cat.poster}`;
         }
@@ -28,11 +30,10 @@ router.get('/:id', async (req, res) => {
     const contenidoId = req.params.id;
     if (Number.isNaN(Number(contenidoId))) return res.status(400).send('El ID tiene que ser un numero');
     try {
-        const contenido = await sequelize.query(`SELECT * FROM catalogoview WHERE id = ${contenidoId}`, {type: sequelize.QueryTypes.SELECT});
-        if (contenido.length < 1) return res.status(404).send('Id no encontrado');
-        for (let cat of contenido) {
-            cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
-        }
+        // const contenido = await sequelize.query(`SELECT * FROM catalogoview WHERE id = ${contenidoId}`, {type: sequelize.QueryTypes.SELECT});
+        const contenido = await VistaCatalogo.findByPk(contenidoId);
+        if (!contenido) return res.status(404).send('Id no encontrado');
+        contenido.poster = `http://${req.headers.host}/catalogo${contenido.poster}`;
         res.status(200).send(contenido);
     } catch (error) {
         console.log(error.message);
@@ -43,7 +44,9 @@ router.get('/:id', async (req, res) => {
 router.get('/titulo/:titulo', async (req, res) => {
     const { titulo} = req.params;
     try {
-        const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE lower(titulo) LIKE lower('%${titulo}%')`, {type: sequelize.QueryTypes.SELECT});
+        // const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE lower(titulo) LIKE lower('%${titulo}%')`, {type: sequelize.QueryTypes.SELECT});
+        const catalogo = await VistaCatalogo.findAll({where: {titulo: { [Op.like]: `%${titulo}%` }}});
+        console.log('catalogo');
         if (catalogo.length < 1) return res.status(400).send('Titulo no encontrado');
         for (let cat of catalogo) {
             cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
@@ -58,7 +61,8 @@ router.get('/titulo/:titulo', async (req, res) => {
 router.get('/genero/:genero', async (req, res) => {
     const { genero} = req.params;
     try {
-        const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE lower(genero) LIKE lower('%${genero}%')`, {type: sequelize.QueryTypes.SELECT});
+        // const catalogo = await sequelize.query(`SELECT * FROM catalogoview WHERE lower(genero) LIKE lower('%${genero}%')`, {type: sequelize.QueryTypes.SELECT});
+        const catalogo = await VistaCatalogo.findAll({where: {genero: { [Op.like]: `%${genero}%` }}});
         if (catalogo.length < 1) return res.status(400).send('Genero no encontrado');
         for (let cat of catalogo) {
             cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
@@ -73,8 +77,9 @@ router.get('/genero/:genero', async (req, res) => {
 router.get('/categoria/:categoria', async (req, res) => {
     const { categoria} = req.params;
     try {
-        const catalogo =
-        await sequelize.query(`SELECT * FROM catalogoview WHERE lower(categoria) LIKE lower('%${categoria}%')`, {type: sequelize.QueryTypes.SELECT});
+        // const catalogo =
+        // await sequelize.query(`SELECT * FROM catalogoview WHERE lower(categoria) LIKE lower('%${categoria}%')`, {type: sequelize.QueryTypes.SELECT});
+        const catalogo = await VistaCatalogo.findAll({where: {categoria: { [Op.like]: `%${categoria}%` }}});
         if (catalogo.length < 1) return res.status(400).send('Categoria no encontrada');
         for (let cat of catalogo) {
             cat.poster = `http://${req.headers.host}/catalogo${cat.poster}`;
